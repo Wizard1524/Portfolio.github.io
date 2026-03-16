@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Developer Portfolio — The Arcane Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep-navy: #050a1a;
+    --navy: #0a1628;
+    --blue-mid: #1a3a6b;
+    --blue-bright: #2e6fda;
+    --blue-glow: #4d9fff;
+    --orange: #f07020;
+    --orange-bright: #ff8c38;
+    --orange-glow: #ffb366;
+    --gold: #e8c56a;
+    --white: #f0e8ff;
+    --white-dim: rgba(240,232,255,0.6);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep-navy);
+    color: var(--white);
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  .cursor {
+    position: fixed; top: 0; left: 0;
+    width: 18px; height: 18px;
+    background: var(--orange-bright);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    mix-blend-mode: screen;
+    transition: transform 0.08s, background 0.2s;
+    box-shadow: 0 0 14px 4px var(--orange-glow);
+  }
+  .cursor-trail {
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--blue-glow);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+    opacity: 0.7;
+  }
+
+  /* ── STARFIELD CANVAS ── */
+  #starfield {
+    position: fixed; inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── FLOATING RUNES ── */
+  .rune {
+    position: fixed;
+    font-size: 1.4rem;
+    color: var(--blue-glow);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 1;
+    animation: runeFloat linear infinite;
+  }
+  @keyframes runeFloat {
+    0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.15; }
+    90%  { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: linear-gradient(to bottom, rgba(5,10,26,0.95), transparent);
+    backdrop-filter: blur(6px);
+  }
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--orange-bright);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 18px var(--orange-glow);
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    color: var(--white-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.25s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--orange-bright);
+    transform: scaleX(0);
+    transition: transform 0.25s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    z-index: 2;
+    padding: 6rem 2rem 4rem;
+  }
+  .hero-orb {
+    position: absolute;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,111,218,0.18) 0%, rgba(240,112,32,0.06) 60%, transparent 80%);
+    filter: blur(30px);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: orbPulse 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes orbPulse {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.8; }
+    50%      { transform: translate(-50%,-50%) scale(1.12); opacity: 1; }
+  }
+  .hero-ring {
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(77,159,255,0.15);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) rotate(0deg);
+    animation: ringRotate 30s linear infinite;
+    pointer-events: none;
+  }
+  .hero-ring::before {
+    content: '✦';
+    position: absolute; top: -8px; left: 50%;
+    transform: translateX(-50%);
+    color: var(--orange-bright);
+    font-size: 0.9rem;
+    filter: drop-shadow(0 0 6px var(--orange-glow));
+  }
+  .hero-ring::after {
+    content: '✦';
+    position: absolute; bottom: -8px; right: 50%;
+    transform: translateX(50%);
+    color: var(--blue-glow);
+    font-size: 0.9rem;
+    filter: drop-shadow(0 0 6px var(--blue-glow));
+  }
+  @keyframes ringRotate { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+    margin-bottom: 1.4rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s;
+  }
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--white) 30%, var(--blue-glow) 60%, var(--orange-bright) 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(77,159,255,0.4));
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.5s;
+  }
+  .hero-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.8rem, 1.4vw, 1rem);
+    letter-spacing: 0.2em;
+    color: var(--white-dim);
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.7s;
+  }
+  .hero-divider {
+    width: 120px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--orange-bright), transparent);
+    margin: 2rem auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+  .hero-bio {
+    max-width: 520px;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--white-dim);
+    font-style: italic;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 1.1s;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    margin-top: 2.5rem;
+    padding: 0.8rem 2.2rem;
+    border: 1px solid var(--orange-bright);
+    border-radius: 2px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 1.3s;
+  }
+  .hero-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--orange-bright);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+  .hero-cta:hover { color: var(--deep-navy); }
+  .hero-cta:hover::before { transform: scaleX(1); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION WRAPPER ── */
+  section {
+    position: relative; z-index: 2;
+    padding: 6rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+    margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::before, .section-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, transparent, var(--orange-bright));
+  }
+  .section-label::after {
+    background: linear-gradient(to left, transparent, var(--orange-bright));
+  }
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3.5rem;
+    color: var(--white);
+    text-shadow: 0 0 30px rgba(77,159,255,0.3);
+  }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: linear-gradient(135deg, rgba(26,58,107,0.4), rgba(10,22,40,0.7));
+    border: 1px solid rgba(77,159,255,0.15);
+    border-radius: 4px;
+    padding: 1.8rem 1.5rem;
+    text-align: center;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(240,112,32,0.04), rgba(46,111,218,0.04));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(240,112,32,0.5);
+    box-shadow: 0 12px 40px rgba(240,112,32,0.12), 0 0 0 1px rgba(240,112,32,0.1);
+  }
+  .skill-card:hover::before { opacity: 1; }
+  .skill-icon {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    display: block;
+    filter: drop-shadow(0 0 8px var(--blue-glow));
+  }
+  .skill-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+  .skill-desc {
+    font-size: 0.85rem;
+    color: var(--white-dim);
+    font-style: italic;
+  }
+
+  /* ── GAMES GRID ── */
+  /* ======================================================
+     HOW TO ADD YOUR GAMES — Read this carefully!
+     ======================================================
+     Each game card is an <article class="game-card"> element.
+     
+     To ADD a new game:
+       1. Copy one <article class="game-card"> block.
+       2. Paste it inside <div class="games-grid">.
+       3. Change data-link="YOUR_GAME_URL" to your game's URL.
+       4. Update the .game-img src="" to your screenshot URL.
+       5. Change .game-title text to your game's name.
+       6. Change .game-genre text to the genre/platform.
+       7. Update .game-desc with your game description.
+     
+     To EDIT a game link:
+       Find: data-link="https://..."
+       Replace the URL with the new link.
+     
+     To REMOVE a game:
+       Delete the entire <article class="game-card">...</article> block.
+     ====================================================== */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  .game-card {
+    position: relative;
+    background: var(--navy);
+    border: 1px solid rgba(77,159,255,0.12);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: none;
+    transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s;
+  }
+  .game-card:hover {
+    transform: translateY(-10px) scale(1.01);
+    box-shadow: 0 20px 60px rgba(46,111,218,0.25), 0 0 0 1px rgba(240,112,32,0.3);
+  }
+  .game-img-wrap {
+    position: relative;
+    width: 100%; height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--blue-mid), var(--deep-navy));
+  }
+  .game-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.4s;
+    filter: brightness(0.85) saturate(1.1);
+  }
+  .game-card:hover .game-img-wrap img {
+    transform: scale(1.07);
+    filter: brightness(1) saturate(1.3);
+  }
+  /* Placeholder when no image */
+  .game-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, rgba(26,58,107,0.7), rgba(240,112,32,0.15));
+  }
+  .game-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(5,10,26,0.95) 0%, rgba(5,10,26,0.3) 60%, transparent 100%);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .game-card:hover .game-overlay { opacity: 1; }
+  .game-play-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--deep-navy);
+    background: var(--orange-bright);
+    padding: 0.65rem 1.8rem;
+    border-radius: 2px;
+    text-decoration: none;
+    box-shadow: 0 0 20px var(--orange-glow);
+    transform: translateY(10px);
+    transition: transform 0.3s;
+    pointer-events: all;
+  }
+  .game-card:hover .game-play-btn { transform: translateY(0); }
+  .game-info { padding: 1.4rem 1.6rem 1.6rem; }
+  .game-genre {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+    margin-bottom: 0.4rem;
+  }
+  .game-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+  .game-desc {
+    font-size: 0.9rem;
+    color: var(--white-dim);
+    line-height: 1.7;
+    font-style: italic;
+  }
+  .game-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid rgba(77,159,255,0.3);
+    border-radius: 2px;
+    color: var(--blue-glow);
+  }
+
+  /* ── ABOUT ── */
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .about-portrait {
+    position: relative;
+  }
+  .portrait-frame {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, rgba(46,111,218,0.2), rgba(240,112,32,0.1));
+    border: 1px solid rgba(77,159,255,0.25);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  /* ── SWAP THIS IMAGE with your own photo ──
+     Replace the placeholder emoji below with:
+     <img src="YOUR_PHOTO_URL" alt="Your Name" style="width:100%;height:100%;object-fit:cover;">
+  */
+  .portrait-frame::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(77,159,255,0.12), transparent 70%);
+  }
+  .portrait-corner {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--orange-bright);
+    border-style: solid;
+  }
+  .portrait-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .portrait-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .portrait-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .portrait-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  .about-text h3 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
+    color: var(--white);
+    margin-bottom: 1.4rem;
+  }
+  .about-text p {
+    color: var(--white-dim);
+    line-height: 1.9;
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
+  }
+  .stat-row {
+    display: flex; gap: 3rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(77,159,255,0.15);
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2rem;
+    color: var(--orange-bright);
+    display: block;
+    text-shadow: 0 0 20px var(--orange-glow);
+  }
+  .stat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+
+  /* ── CONTACT ── */
+  .contact-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .contact-inner p {
+    color: var(--white-dim);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    font-style: italic;
+    margin-bottom: 2.5rem;
+  }
+  .contact-links {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 1.2rem;
+  }
+  .contact-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.7rem 1.6rem;
+    border: 1px solid rgba(77,159,255,0.3);
+    border-radius: 2px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-link::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(46,111,218,0.2), rgba(77,159,255,0.1));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .contact-link:hover { border-color: var(--blue-glow); color: var(--blue-glow); }
+  .contact-link:hover::before { opacity: 1; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: 3rem;
+    border-top: 1px solid rgba(77,159,255,0.1);
+  }
+  footer p {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(240,232,255,0.3);
+  }
+  footer span { color: var(--orange-bright); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── MAGIC PARTICLE BURST on click ── */
+  .particle {
+    position: fixed;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9000;
+    animation: particleBurst 0.7s ease forwards;
+  }
+  @keyframes particleBurst {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: var(--tx, translate(40px,-60px)) scale(0); opacity: 0; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    section { padding: 4rem 1.5rem; }
+    .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .portrait-frame { aspect-ratio: 1/1; max-width: 240px; margin: 0 auto; }
+    .stat-row { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- Floating runes -->
+<script>
+  const runeSymbols = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛜ','ᛞ','ᛟ'];
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('div');
+    el.className = 'rune';
+    el.textContent = runeSymbols[Math.floor(Math.random()*runeSymbols.length)];
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.animationDuration = (18 + Math.random()*22) + 's';
+    el.style.animationDelay = (Math.random()*20) + 's';
+    el.style.fontSize = (0.9 + Math.random()*1.2) + 'rem';
+    document.body.appendChild(el);
+  }
+</script>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">✦ Lazy Wizard</div>
+  <ul class="nav-links">
+    <li><a href="#games">Spellbook</a></li>
+    <li><a href="#skills">Mastery</a></li>
+    <li><a href="#about">The Wizard</a></li>
+    <li><a href="#contact">Summon</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-ring"></div>
+  <p class="hero-eyebrow">✦ &nbsp; Master of Codes &nbsp; ✦</p>
+  <!-- ══ EDIT YOUR NAME BELOW ══ -->
+  <h1 class="hero-title">Gaurav Rajendra Lad</h1>
+  <p class="hero-subtitle">Game Developer &nbsp;·&nbsp; Systems Architect &nbsp;·&nbsp; Code Conjurer</p>
+  <div class="hero-divider"></div>
+  <!-- ══ EDIT YOUR TAGLINE BELOW ══ -->
+  <p class="hero-bio">I build immersive digital worlds from the ground up — engineering the systems, mechanics, and code that transform ideas into games players can't put down.</p>
+  <a href="#games" class="hero-cta">✦ &nbsp; View My Grimoire</a>
+</div>
+
+<!-- GAMES SECTION -->
+<section id="games">
+  <p class="section-label reveal">Spellbook of Works</p>
+  <h2 class="section-title reveal">Featured Games</h2>
+
+  <div class="games-grid">
+
+    <!-- GAME 1 -->
+    <article class="game-card reveal" data-link="https://your-game-link-1.com"><!--EDIT-->
+      <div class="game-img-wrap">
+        <img src="your-screenshot.jpg" alt="Game Name"><!--EDIT-->
+        <div class="game-overlay">
+          <span class="game-play-btn">✦ Play Now</span>
+        </div>
+      </div>
+      <div class="game-info">
+        <p class="game-genre">RPG &nbsp;·&nbsp; PC</p><!--EDIT-->
+        <h3 class="game-title">Realm of Echoes</h3><!--EDIT-->
+        <p class="game-desc">An open-world RPG where ancient echoes of fallen heroes guide you through a fractured kingdom torn apart by rival mage guilds.</p><!--EDIT-->
+        <div class="game-tags">
+          <span class="tag">Unity</span><!--EDIT-->
+          <span class="tag">Narrative</span><!--EDIT-->
+          <span class="tag">Open World</span><!--EDIT-->
+        </div>
+      </div>
+    </article>
+
+    
+
+  </div>
+</section>
+
+<!-- SKILLS SECTION -->
+<section id="skills" style="background: linear-gradient(to bottom, transparent, rgba(26,58,107,0.08), transparent);">
+  <p class="section-label reveal">Technologies &amp; Expertise</p>
+  <h2 class="section-title reveal">Developer's Arsenal</h2>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <span class="skill-icon">⚙️</span>
+      <p class="skill-name">Unity / Unreal</p>
+      <p class="skill-desc">Engine architecture & gameplay systems</p>
+    </div>
+    <div class="skill-card reveal">
+      <span class="skill-icon">💻</span>
+      <p class="skill-name">C# / C++</p>
+      <p class="skill-desc">Clean, scalable game code</p>
+    </div>
+    <div class="skill-card reveal">
+      <span class="skill-icon">🌐</span>
+      <p class="skill-name">Multiplayer</p>
+      <p class="skill-desc">Real-time sync using Firebase</p>
+    </div>
+    <div class="skill-card reveal">
+      <span class="skill-icon">🎨</span>
+      <p class="skill-name">SFX & VFX</p>
+      <p class="skill-desc">particle systems & post-processing</p>
+    </div>
+    <div class="skill-card reveal">
+      <span class="skill-icon">🔧</span>
+      <p class="skill-name">Tools & Pipeline</p>
+      <p class="skill-desc">Git, Figma Expertise</p>
+    </div>
+    <div class="skill-card reveal">
+      <span class="skill-icon">📱</span>
+      <p class="skill-name">Mobile & WebGL</p>
+      <p class="skill-desc">Cross-platform builds & optimisation</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about">
+  <p class="section-label reveal">Origins &amp; Lore</p>
+  <h2 class="section-title reveal">The Wizard</h2>
+  <div class="about-inner">
+    <div class="about-portrait reveal">
+      <div class="portrait-frame">
+             <img src="your-photo-url.jpg" alt="Your Name"
+                  style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+        <div class="portrait-corner tl"></div>
+        <div class="portrait-corner tr"></div>
+        <div class="portrait-corner bl"></div>
+        <div class="portrait-corner br"></div>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <!-- ══ EDIT YOUR BIO BELOW ══ -->
+      <h3>Greetings, Traveller</h3>
+      <p>I am a game developer with a passion for building the engines beneath the magic — the physics, the AI, the netcode, and the systems that make a world feel alive. My work spans the full stack of game development, from low-level engine architecture to polished player-facing features.</p>
+      <p>With 5+ years shipping titles across mobile, PC, and browser, I have written the code powering games played by over half a million people — each one a technical challenge I relished solving.</p>
+      <p>Off-hours I'm deep in side projects: experimenting with procedural generation, custom rendering pipelines, and whatever new engine feature just dropped. I believe great games are built on invisible foundations — when the code is right, the magic takes care of itself.</p>
+      <!-- ══ EDIT YOUR STATS BELOW ══ -->
+      <div class="stat-row">
+        <div class="stat">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Games Shipped</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">500K</span>
+          <span class="stat-label">Players Reached</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">5 months</span>
+          <span class="stat-label">In the Code</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact">
+  <p class="section-label reveal">Open a Portal</p>
+  <h2 class="section-title reveal">Summon Me</h2>
+  <div class="contact-inner reveal">
+    <p>Whether you're a studio seeking a developer, an indie team needing a technical co-founder, or a fellow coder wanting to talk engines and architecture — the portal is open.</p>
+    <div class="contact-links">
+      <!-- ══ REPLACE # WITH YOUR ACTUAL LINKS ══ -->
+      <a href="mailto:grlad265@email.com" class="contact-link">✉ &nbsp; Send Scroll</a>
+      <a href="https://linkedin.com/in/yourprofile" class="contact-link" target="_blank">in &nbsp; LinkedIn</a>
+      <a href="https://twitter.com/yourhandle" class="contact-link" target="_blank">𝕏 &nbsp; Twitter</a>
+      <a href="https://itch.io/yourprofile" class="contact-link" target="_blank">🎮 &nbsp; itch.io</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <!-- ══ EDIT YOUR NAME IN FOOTER ══ -->
+  <p>Crafted with focus <span>Gaurav Rajendra Lad</span> &nbsp;·&nbsp; All spells reserved &nbsp;·&nbsp; <span>2026</span></p>
+</footer>
+
+<script>
+/* ── STARFIELD ── */
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 220; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.2,
+      a: Math.random(),
+      speed: Math.random() * 0.004 + 0.001,
+      hue: Math.random() > 0.85 ? '#f07020' : (Math.random() > 0.6 ? '#4d9fff' : '#f0e8ff')
+    });
+  }
+}
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const t = Date.now() * 0.0005;
+  stars.forEach(s => {
+    const alpha = 0.3 + 0.7 * Math.abs(Math.sin(t * s.speed * 80 + s.a * 100));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = s.hue;
+    ctx.globalAlpha = alpha * 0.9;
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(drawStars);
+}
+resizeCanvas(); initStars(); drawStars();
+window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
+
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursorTrail');
+let mx = 0, my = 0, tx = 0, ty = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+});
+function animTrail() {
+  tx += (mx - tx) * 0.12;
+  ty += (my - ty) * 0.12;
+  trail.style.left = tx + 'px';
+  trail.style.top  = ty + 'px';
+  requestAnimationFrame(animTrail);
+}
+animTrail();
+document.querySelectorAll('a, .game-card, .skill-card, .contact-link').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1.8)';
+    trail.style.width = '50px'; trail.style.height = '50px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    trail.style.width = '36px'; trail.style.height = '36px';
+  });
+});
+
+/* ── MAGIC PARTICLES on click ── */
+document.addEventListener('click', e => {
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = (Math.PI * 2 / 10) * i;
+    const dist = 40 + Math.random() * 50;
+    const tx = Math.cos(angle) * dist + 'px';
+    const ty = Math.sin(angle) * dist + 'px';
+    p.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;
+      background:${Math.random()>0.5?'#ff8c38':'#4d9fff'};
+      --tx:translate(${tx},${ty});`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 700);
+  }
+});
+
+/* ── GAME CARD CLICK → open link ── */
+document.querySelectorAll('.game-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const link = card.getAttribute('data-link');
+    if (link && link !== '#') window.open(link, '_blank');
+  });
+});
+
+/* ── SCROLL REVEAL ── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

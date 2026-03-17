@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Game Developer Portfolio — The Arcane Studio</title>
@@ -31,7 +32,10 @@
     font-size: 18px;
     overflow-x: hidden;
     cursor: none;
+    
   }
+
+  
 
   /* ── CUSTOM CURSOR ── */
   .cursor {
@@ -81,7 +85,26 @@
     90%  { opacity: 0.15; }
     100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
   }
+.social-links {
+  margin-top: 40px;              /* pushes icons DOWN */
+  display: flex;
+  justify-content: center;       /* center horizontally */
+  align-items: center;
+  gap: 30px;                     /* more space between icons */
+}
 
+.social-icon {
+  font-size: 32px;               /* BIGGER icons */
+  color: #ccc;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect (premium feel) */
+.social-icon:hover {
+  color: #ff8c38;
+  transform: translateY(-6px) scale(1.25);
+  text-shadow: 0 0 12px #ff8c38;
+}
   /* ── NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
@@ -361,39 +384,47 @@
        Delete the entire <article class="game-card">...</article> block.
      ====================================================== */
   .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-  .game-card {
-    position: relative;
-    background: var(--navy);
-    border: 1px solid rgba(77,159,255,0.12);
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: none;
-    transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s;
-  }
-  .game-card:hover {
-    transform: translateY(-10px) scale(1.01);
-    box-shadow: 0 20px 60px rgba(46,111,218,0.25), 0 0 0 1px rgba(240,112,32,0.3);
-  }
-  .game-img-wrap {
-    position: relative;
-    width: 100%; height: 200px;
-    overflow: hidden;
-    background: linear-gradient(135deg, var(--blue-mid), var(--deep-navy));
-  }
-  .game-img-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease, filter 0.4s;
-    filter: brightness(0.85) saturate(1.1);
-  }
-  .game-card:hover .game-img-wrap img {
-    transform: scale(1.07);
-    filter: brightness(1) saturate(1.3);
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.game-card {
+  position: relative;
+  background: var(--navy);
+  border: 1px solid rgba(77,159,255,0.12);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: none;
+  transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s;
+}
+
+.game-card:hover {
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(46,111,218,0.25), 0 0 0 1px rgba(240,112,32,0.3);
+}
+
+/* ✅ FIXED PART */
+.game-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;   /* makes it square */
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--blue-mid), var(--deep-navy));
+}
+
+.game-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* fills nicely */
+  transition: transform 0.5s ease, filter 0.4s;
+  filter: brightness(0.85) saturate(1.1);
+}
+
+.game-card:hover .game-img-wrap img {
+  transform: scale(1.07);
+  filter: brightness(1) saturate(1.3);
+}
   /* Placeholder when no image */
   .game-img-placeholder {
     width: 100%; height: 100%;
@@ -461,81 +492,10 @@
     color: var(--blue-glow);
   }
 
+  
+
   /* ── ABOUT ── */
-  .about-inner {
-    display: grid;
-    grid-template-columns: 1fr 1.6fr;
-    gap: 5rem;
-    align-items: center;
-  }
-  .about-portrait {
-    position: relative;
-  }
-  .portrait-frame {
-    width: 100%;
-    aspect-ratio: 3/4;
-    background: linear-gradient(135deg, rgba(46,111,218,0.2), rgba(240,112,32,0.1));
-    border: 1px solid rgba(77,159,255,0.25);
-    border-radius: 2px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 6rem;
-    position: relative;
-    overflow: hidden;
-  }
-  /* ── SWAP THIS IMAGE with your own photo ──
-     Replace the placeholder emoji below with:
-     <img src="YOUR_PHOTO_URL" alt="Your Name" style="width:100%;height:100%;object-fit:cover;">
-  */
-  .portrait-frame::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(77,159,255,0.12), transparent 70%);
-  }
-  .portrait-corner {
-    position: absolute;
-    width: 20px; height: 20px;
-    border-color: var(--orange-bright);
-    border-style: solid;
-  }
-  .portrait-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-  .portrait-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
-  .portrait-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
-  .portrait-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-
-  .about-text h3 {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.6rem;
-    color: var(--white);
-    margin-bottom: 1.4rem;
-  }
-  .about-text p {
-    color: var(--white-dim);
-    line-height: 1.9;
-    margin-bottom: 1.2rem;
-    font-size: 1rem;
-  }
-  .stat-row {
-    display: flex; gap: 3rem;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(77,159,255,0.15);
-  }
-  .stat { text-align: center; }
-  .stat-num {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 2rem;
-    color: var(--orange-bright);
-    display: block;
-    text-shadow: 0 0 20px var(--orange-glow);
-  }
-  .stat-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.68rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--white-dim);
-  }
-
+ .about-inner { display: grid; grid-template-columns: 1fr 1.6fr; gap: 5rem; align-items: center; } .about-portrait { position: relative; } .portrait-frame { width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg, rgba(46,111,218,0.2), rgba(240,112,32,0.1)); border: 1px solid rgba(77,159,255,0.25); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 6rem; position: relative; overflow: hidden; } /* ── SWAP THIS IMAGE with your own photo ── Replace the placeholder emoji below with: <img src="YOUR_PHOTO_URL" alt="Your Name" style="width:100%;height:100%;object-fit:cover;"> */ .portrait-frame::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(77,159,255,0.12), transparent 70%); } .portrait-corner { position: absolute; width: 20px; height: 20px; border-color: var(--orange-bright); border-style: solid; } .portrait-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; } .portrait-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; } .portrait-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; } .portrait-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; } .about-text h3 { font-family: 'Cinzel Decorative', serif; font-size: 1.6rem; color: var(--white); margin-bottom: 1.4rem; } .about-text p { color: var(--white-dim); line-height: 1.9; margin-bottom: 1.2rem; font-size: 1rem; } .stat-row { display: flex; gap: 3rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(77,159,255,0.15); } .stat { text-align: center; } .stat-num { font-family: 'Cinzel Decorative', serif; font-size: 2rem; color: var(--orange-bright); display: block; text-shadow: 0 0 20px var(--orange-glow); } .stat-label { font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--white-dim); }
   /* ── CONTACT ── */
   .contact-inner {
     max-width: 600px;
@@ -650,10 +610,10 @@
 <nav>
   <div class="nav-logo">✦ Lazy Wizard</div>
   <ul class="nav-links">
-    <li><a href="#games">Spellbook</a></li>
-    <li><a href="#skills">Mastery</a></li>
-    <li><a href="#about">The Wizard</a></li>
-    <li><a href="#contact">Summon</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
@@ -661,94 +621,161 @@
 <div class="hero">
   <div class="hero-orb"></div>
   <div class="hero-ring"></div>
-  <p class="hero-eyebrow">✦ &nbsp; Master of Codes &nbsp; ✦</p>
-  <!-- ══ EDIT YOUR NAME BELOW ══ -->
+
+  <p class="hero-eyebrow">✦ &nbsp; Code Apprentice &nbsp; ✦</p>
+
   <h1 class="hero-title">Gaurav Rajendra Lad</h1>
-  <p class="hero-subtitle">Game Developer &nbsp;·&nbsp; Systems Architect &nbsp;·&nbsp; Code Conjurer</p>
+
+ <p class="hero-subtitle">
+     Unity (C#) &nbsp;·&nbsp; Game Developer &nbsp;·&nbsp; Unreal (C++)
+</p>
+
   <div class="hero-divider"></div>
-  <!-- ══ EDIT YOUR TAGLINE BELOW ══ -->
-  <p class="hero-bio">I build immersive digital worlds from the ground up — engineering the systems, mechanics, and code that transform ideas into games players can't put down.</p>
-  <a href="#games" class="hero-cta">✦ &nbsp; View My Grimoire</a>
+
+<p class="hero-bio">
+  I am a passionate game developer building projects in Unity using C#. 
+  I enjoy creating gameplay mechanics and systems, and I am currently learning Unreal Engine and C++ to expand my skills.
+</p>
+
+  <a href="#games" class="hero-cta">✦ &nbsp; View My Games</a>
 </div>
 
-<!-- GAMES SECTION -->
+
+<!-- SKILLS -->
+
+<section id="skills" style="background: linear-gradient(to bottom, transparent, rgba(26,58,107,0.08), transparent);">
+  <p class="section-label reveal">Skills & Tools</p>
+  <h2 class="section-title reveal">Developer Arsenal</h2>
+
+  <div class="skills-grid">
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">⚙️</span>
+      <p class="skill-name">Unity</p>
+      <p class="skill-desc">Gameplay mechanics & systems development</p>
+    </div>
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">🧪</span>
+      <p class="skill-name">Unreal Engine</p>
+      <p class="skill-desc">Currently learning C++ and engine basics</p>
+    </div>
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">💻</span>
+      <p class="skill-name">C#</p>
+      <p class="skill-desc">Game scripting and logic implementation</p>
+    </div>
+
+    <div class="skill-card reveal">
+  <span class="skill-icon">🧬</span>
+  <p class="skill-name">C++</p>
+  <p class="skill-desc">Core programming and Unreal Engine development</p>
+</div>
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">🧠</span>
+      <p class="skill-name">Gameplay Systems</p>
+      <p class="skill-desc">Player controls, UI interaction, game logic</p>
+    </div>
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">🎨</span>
+      <p class="skill-name">VFX & UI</p>
+      <p class="skill-desc">Basic particle systems and UI design</p>
+    </div>
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">🔧</span>
+      <p class="skill-name">Tools</p>
+      <p class="skill-desc">Git, Unity Editor, basic Figma</p>
+    </div>
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">🚀</span>
+        <p class="skill-name">Build & Deployment</p>
+<p class="skill-desc">PC and WebGL builds using Unity</p>
+    </div>
+ 
+  </div>
+</section>
+
+<!-- GAMES -->
 <section id="games">
-  <p class="section-label reveal">Spellbook of Works</p>
+  <p class="section-label reveal">Spellbook of Projects</p>
   <h2 class="section-title reveal">Featured Games</h2>
 
   <div class="games-grid">
 
-    <!-- GAME 1 -->
-    <article class="game-card reveal" data-link="https://your-game-link-1.com"><!--EDIT-->
-      <div class="game-img-wrap">
-        <img src="your-screenshot.jpg" alt="Game Name"><!--EDIT-->
-        <div class="game-overlay">
-          <span class="game-play-btn">✦ Play Now</span>
-        </div>
-      </div>
-      <div class="game-info">
-        <p class="game-genre">RPG &nbsp;·&nbsp; PC</p><!--EDIT-->
-        <h3 class="game-title">Realm of Echoes</h3><!--EDIT-->
-        <p class="game-desc">An open-world RPG where ancient echoes of fallen heroes guide you through a fractured kingdom torn apart by rival mage guilds.</p><!--EDIT-->
-        <div class="game-tags">
-          <span class="tag">Unity</span><!--EDIT-->
-          <span class="tag">Narrative</span><!--EDIT-->
-          <span class="tag">Open World</span><!--EDIT-->
-        </div>
-      </div>
-    </article>
-
     
+  <!-- GAME 1 -->
+  <article class="game-card reveal" data-link="https://lazy-wizard-studio.itch.io/are-you-stupid">
+    <div class="game-img-wrap">
+      <img src="AreYouStupid.png" alt="Are You Stupid!!!">
+      <div class="game-overlay">
+        <span class="game-play-btn">✦ Play Now</span>
+      </div>
+    </div>
 
-  </div>
-</section>
+    <div class="game-info">
+      <p class="game-genre">2D Puzzle · PC</p>
+      <h3 class="game-title">Are You Stupid?</h3>
 
-<!-- SKILLS SECTION -->
-<section id="skills" style="background: linear-gradient(to bottom, transparent, rgba(26,58,107,0.08), transparent);">
-  <p class="section-label reveal">Technologies &amp; Expertise</p>
-  <h2 class="section-title reveal">Developer's Arsenal</h2>
-  <div class="skills-grid">
-    <div class="skill-card reveal">
-      <span class="skill-icon">⚙️</span>
-      <p class="skill-name">Unity / Unreal</p>
-      <p class="skill-desc">Engine architecture & gameplay systems</p>
+      <p class="game-desc">
+        A 2D brain teaser with tricky puzzles and unexpected solutions.
+        Built level interactions and logic-based mechanics.
+      </p>
+
+      <div class="game-tags">
+        <span class="tag">Unity</span>
+        <span class="tag">C#</span>
+        <span class="tag">Puzzle Logic</span>
+      </div>
     </div>
-    <div class="skill-card reveal">
-      <span class="skill-icon">💻</span>
-      <p class="skill-name">C# / C++</p>
-      <p class="skill-desc">Clean, scalable game code</p>
+  </article>
+
+  <!-- GAME 2 -->
+  <article class="game-card reveal" data-link="https://lazy-wizard-studio.itch.io/facade">
+    <div class="game-img-wrap">
+      <img src="Facade.png" alt="Facade">
+      <div class="game-overlay">
+        <span class="game-play-btn">✦ Play Now</span>
+      </div>
     </div>
-    <div class="skill-card reveal">
-      <span class="skill-icon">🌐</span>
-      <p class="skill-name">Multiplayer</p>
-      <p class="skill-desc">Real-time sync using Firebase</p>
+
+    <div class="game-info">
+  <p class="game-genre">2D Platformer · PC</p>
+  <h3 class="game-title">Facade</h3>
+
+     <p class="game-desc">
+  A 2D retro platformer featuring invisible enemies that can only be revealed using a special mask. 
+  Designed core mechanics around visibility and combat interaction.
+</p>
+     <div class="game-tags">
+  <span class="tag">Unity</span>
+  <span class="tag">C#</span>
+  <span class="tag">Platformer</span>
+  <span class="tag">Combat</span>
+  <span class="tag">Game Mechanics</span>
+</div>
     </div>
-    <div class="skill-card reveal">
-      <span class="skill-icon">🎨</span>
-      <p class="skill-name">SFX & VFX</p>
-      <p class="skill-desc">particle systems & post-processing</p>
-    </div>
-    <div class="skill-card reveal">
-      <span class="skill-icon">🔧</span>
-      <p class="skill-name">Tools & Pipeline</p>
-      <p class="skill-desc">Git, Figma Expertise</p>
-    </div>
-    <div class="skill-card reveal">
-      <span class="skill-icon">📱</span>
-      <p class="skill-name">Mobile & WebGL</p>
-      <p class="skill-desc">Cross-platform builds & optimisation</p>
-    </div>
-  </div>
-</section>
+  </article>
+
+</div>
+
+
 
 <!-- ABOUT SECTION -->
 <section id="about">
-  <p class="section-label reveal">Origins &amp; Lore</p>
-  <h2 class="section-title reveal">The Wizard</h2>
+
+ 
+</div>
+  <p class="section-label reveal">The Developer</p>
+  <h2 class="section-title reveal">Wizard</h2>
   <div class="about-inner">
     <div class="about-portrait reveal">
       <div class="portrait-frame">
-             <img src="your-photo-url.jpg" alt="Your Name"
+             <img src="ME.jpg" alt="Your Name"
                   style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
         <div class="portrait-corner tl"></div>
         <div class="portrait-corner tr"></div>
@@ -759,24 +786,46 @@
     <div class="about-text reveal">
       <!-- ══ EDIT YOUR BIO BELOW ══ -->
       <h3>Greetings, Traveller</h3>
-      <p>I am a game developer with a passion for building the engines beneath the magic — the physics, the AI, the netcode, and the systems that make a world feel alive. My work spans the full stack of game development, from low-level engine architecture to polished player-facing features.</p>
-      <p>With 5+ years shipping titles across mobile, PC, and browser, I have written the code powering games played by over half a million people — each one a technical challenge I relished solving.</p>
-      <p>Off-hours I'm deep in side projects: experimenting with procedural generation, custom rendering pipelines, and whatever new engine feature just dropped. I believe great games are built on invisible foundations — when the code is right, the magic takes care of itself.</p>
+      <p>I am a game developer with a passion for creating the engines behind the magic — from physics and AI to netcode and gameplay systems. I enjoy building both the invisible foundations and the player-facing features that bring a world to life.</p>
+<p>In my 5 months of experience, I’ve contributed to game projects across PC and web platforms, participating in jams, squashing bugs, and collaborating in small teams. I’m constantly exploring side projects like procedural generation and custom rendering pipelines to expand my skills and deepen my understanding of game development.</p>
       <!-- ══ EDIT YOUR STATS BELOW ══ -->
+
+      
       <div class="stat-row">
         <div class="stat">
-          <span class="stat-num">3</span>
-          <span class="stat-label">Games Shipped</span>
+          <span class="stat-num">2</span>
+          <span class="stat-label">Jam Participation</span>
         </div>
         <div class="stat">
-          <span class="stat-num">500K</span>
-          <span class="stat-label">Players Reached</span>
+          <span class="stat-num">50+</span>
+          <span class="stat-label">Bugs Squashed</span>
+        </div>
+         <div class="stat">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Teams Worked-in</span>
         </div>
         <div class="stat">
           <span class="stat-num">5 months</span>
           <span class="stat-label">In the Code</span>
         </div>
+       
       </div>
+       <div class="social-links">
+  <a href="https://www.instagram.com/lazy_wizard_studio?igsh=MTNxc3c0ZHZpbHhhaQ==" target="_blank" class="social-icon">
+    <i class="fab fa-instagram"></i>
+  </a>
+
+  <a href="https://lazy-wizard-studio.itch.io/" target="_blank" class="social-icon">
+    <i class="fab fa-itch-io"></i>
+  </a>
+
+  <a href="https://www.linkedin.com/in/gaurav-lad-68bb9b360?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="social-icon">
+    <i class="fab fa-linkedin"></i>
+  </a>
+
+  <a href="https://github.com/Wizard1524" target="_blank" class="social-icon">
+    <i class="fab fa-github"></i>
+  </a>
     </div>
   </div>
 </section>
@@ -786,13 +835,34 @@
   <p class="section-label reveal">Open a Portal</p>
   <h2 class="section-title reveal">Summon Me</h2>
   <div class="contact-inner reveal">
-    <p>Whether you're a studio seeking a developer, an indie team needing a technical co-founder, or a fellow coder wanting to talk engines and architecture — the portal is open.</p>
+    <p>Whether you're a studio seeking a developer, an indie team in need of a teammate, or a fellow coder wishing to share knowledge — the portal is open.</p>
     <div class="contact-links">
       <!-- ══ REPLACE # WITH YOUR ACTUAL LINKS ══ -->
-      <a href="mailto:grlad265@email.com" class="contact-link">✉ &nbsp; Send Scroll</a>
-      <a href="https://linkedin.com/in/yourprofile" class="contact-link" target="_blank">in &nbsp; LinkedIn</a>
-      <a href="https://twitter.com/yourhandle" class="contact-link" target="_blank">𝕏 &nbsp; Twitter</a>
-      <a href="https://itch.io/yourprofile" class="contact-link" target="_blank">🎮 &nbsp; itch.io</a>
+    <a href="mailto:grlad265@gmail.com" class="contact-link">✉ Send Scroll</a>
+
+<a href="https://www.linkedin.com/in/gaurav-lad-68bb9b360" target="_blank" class="contact-link">
+  in LinkedIn
+</a>
+
+<a href="https://github.com/Wizard1524" target="_blank" class="contact-link">
+  💻 GitHub
+</a>
+
+<a href="https://lazy-wizard-studio.itch.io/" target="_blank" class="contact-link">
+  🎮 itch.io
+</a>
+
+<a href="https://www.instagram.com/wizard__1524" target="_blank" class="contact-link">
+  📸 Instagram
+</a>
+
+<a href="https://wa.me/918080486875" target="_blank" class="contact-link">
+  📱 WhatsApp
+</a>
+
+<a href="https://discord.com/users/wizard_1524" target="_blank" class="contact-link">
+  💬 Discord
+</a>
     </div>
   </div>
 </section>

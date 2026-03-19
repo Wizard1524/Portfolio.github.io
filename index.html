@@ -65,6 +65,34 @@
     opacity: 0.7;
   }
 
+  .magic-particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 9999;
+
+  background: radial-gradient(circle, #ffb366, #ff8c38);
+  box-shadow:
+    0 0 6px #ff8c38,
+    0 0 12px #ff8c38,
+    0 0 20px #f07020;
+
+  animation: magicFade 0.6s ease-out forwards;
+}
+
+@keyframes magicFade {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -120%) scale(0);
+    opacity: 0;
+  }
+}
+
   /* ── STARFIELD CANVAS ── */
   #starfield {
     position: fixed; inset: 0;
@@ -592,6 +620,8 @@
     .portrait-frame { aspect-ratio: 1/1; max-width: 240px; margin: 0 auto; }
     .stat-row { gap: 1.5rem; }
   }
+
+  
 </style>
 </head>
 <body>
@@ -602,6 +632,29 @@
 
 <!-- Floating runes -->
 <script>
+
+  document.addEventListener('mousemove', (e) => {
+  const particle = document.createElement('div');
+  particle.className = 'magic-particle';
+
+  particle.style.left = e.clientX + 'px';
+  particle.style.top = e.clientY + 'px';
+
+  // Random size
+  const size = Math.random() * 6 + 2;
+  particle.style.width = size + 'px';
+  particle.style.height = size + 'px';
+
+  // Random color (blue + orange magic)
+  const colors = ['#ff8c38', '#4d9fff', '#ffb366'];
+  particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+  document.body.appendChild(particle);
+
+  setTimeout(() => {
+    particle.remove();
+  }, 600);
+});
   const runeSymbols = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛜ','ᛞ','ᛟ'];
   for (let i = 0; i < 18; i++) {
     const el = document.createElement('div');
@@ -805,6 +858,33 @@
   </div>
 </article>
 
+<!-- GAME 4 -->
+<article class="game-card reveal" data-link="https://lazy-wizard-studio.itch.io/football-clicker">
+  <div class="game-img-wrap">
+    <img src="FootballClicker.png" alt="Football Clicker">
+    <div class="game-overlay">
+      <span class="game-play-btn">✦ Play Now</span>
+    </div>
+  </div>
+
+  <div class="game-info">
+    <p class="game-genre">2D Clicker · PC</p>
+    <h3 class="game-title">Football Clicker</h3>
+
+    <p class="game-desc">
+     Football Clicker is an addictive incremental game with a strategic twist. Don't just click—manage. Produce footballs with every tap, then master the market by controlling your Supply and Demand.
+    </p>
+
+    <p class="game-role">Role: Solo Developer</p>
+
+    <div class="game-tags">
+      <span class="tag">Unity</span>
+      <span class="tag">C#</span>
+      <span class="tag">Clicker</span>
+    </div>
+  </div>
+</article>
+
 </div>
 
 
@@ -832,8 +912,8 @@
     <div class="about-text reveal">
       <!-- ══ EDIT YOUR BIO BELOW ══ -->
       <h3>Greetings, Traveller</h3>
-      <p>I am a game developer with a passion for creating the engines behind the magic — from physics and AI to netcode and gameplay systems. I enjoy building both the invisible foundations and the player-facing features that bring a world to life.</p>
-<p>In my 5 months of experience, I’ve contributed to game projects across PC and web platforms, participating in jams, squashing bugs, and collaborating in small teams. I’m constantly exploring side projects like procedural generation and custom rendering pipelines to expand my skills and deepen my understanding of game development.</p>
+      <p>I am a gameplay-focused developer working with Unity (C#) and Unreal Engine (C++). I enjoy designing and implementing core game systems such as player mechanics, UI interactions, and game logic.</p>
+<p>Over the past few months, I’ve built multiple small-scale games, participated in game jams, and explored systems like procedural generation and gameplay architecture.</p>
       <!-- ══ EDIT YOUR STATS BELOW ══ -->
 
       
@@ -851,8 +931,8 @@
           <span class="stat-label">Teams Worked-in</span>
         </div>
         <div class="stat">
-          <span class="stat-num">5 months</span>
-          <span class="stat-label">In the Code</span>
+          <span class="stat-num">5</span>
+          <span class="stat-label">months In the Code</span>
         </div>
        
       </div>

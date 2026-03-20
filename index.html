@@ -387,6 +387,8 @@
     position: relative;
     overflow: hidden;
   }
+
+  
   .skill-card::before {
     content: '';
     position: absolute; inset: 0;
@@ -542,7 +544,7 @@
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
-  }
+}
   .contact-inner p {
     color: var(--white-dim);
     font-size: 1.05rem;
@@ -622,7 +624,15 @@
     section { padding: 4rem 1.5rem; }
     .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
     .portrait-frame { aspect-ratio: 1/1; max-width: 240px; margin: 0 auto; }
-    .stat-row { gap: 1.5rem; }
+   .stat-row {
+  display: flex;
+  gap: 1.5rem; /* reduced from 3rem */
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(77,159,255,0.15);
+  flex-wrap: wrap; /* allows wrapping on small screens */
+  justify-content: center; /* centers them nicely */
+}
   }
 
   /* ── ARCANE DUEL EASTER EGG ── */
@@ -772,6 +782,109 @@
     font-family:'Crimson Pro', Georgia, serif;
   }
   .ad-rule-text b { color:#ff8c38; font-weight:normal; }
+
+  /* ── CONTACT CARDS ── */
+  .contact-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .contact-inner p {
+    color: var(--white-dim);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    font-style: italic;
+    margin-bottom: 2.5rem;
+    position: relative;
+    padding: 1.2rem 2rem;
+    border-left: 2px solid var(--orange-bright);
+    border-right: 2px solid var(--orange-bright);
+    border-radius: 0;
+    background: rgba(10,22,40,0.4);
+    text-align: center;
+    letter-spacing: 0.02em;
+}
+
+.contact-inner p::before {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    left: -12px;
+    transform: translateY(-50%);
+    color: var(--orange-bright);
+    font-size: 0.8rem;
+    background: var(--deep-navy);
+    padding: 4px 0;
+    filter: drop-shadow(0 0 6px var(--orange-glow));
+}
+
+.contact-inner p::after {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    transform: translateY(-50%);
+    color: var(--orange-bright);
+    font-size: 0.8rem;
+    background: var(--deep-navy);
+    padding: 4px 0;
+    filter: drop-shadow(0 0 6px var(--orange-glow));
+}
+  .contact-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.8rem 1rem;
+    background: rgba(10,22,40,0.6);
+    border: 1px solid rgba(77,159,255,0.15);
+    border-radius: 8px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .contact-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(240,112,32,0.1), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .contact-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(240,112,32,0.5);
+    box-shadow: 0 12px 40px rgba(240,112,32,0.15), 0 0 0 1px rgba(240,112,32,0.1);
+  }
+  .contact-card:hover::before { opacity: 1; }
+  .contact-card-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 8px var(--orange-glow));
+    transition: transform 0.3s;
+  }
+  .contact-card:hover .contact-card-icon {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 14px var(--orange-glow));
+  }
+  .contact-card-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    transition: color 0.3s;
+  }
+  .contact-card:hover .contact-card-label { color: var(--orange-bright); }
+  .contact-card-sub {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.8rem;
+    color: var(--white-dim);
+    font-style: italic;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -782,6 +895,8 @@
 
 <!-- Floating runes -->
 <script>
+
+  
   document.addEventListener('mousemove', (e) => {
   const particle = document.createElement('div');
   particle.className = 'magic-particle';
@@ -806,6 +921,42 @@
     el.style.fontSize = (0.9 + Math.random()*1.2) + 'rem';
     document.body.appendChild(el);
   }
+/* ── SUBTITLE SHUFFLE ON HOVER ── */
+(function(){
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#@!%&*+=';
+
+  function shuffleText(el, original) {
+    let iteration = 0;
+    const maxIterations = original.length * 3;
+    clearInterval(el._shuffleInt);
+    el._shuffleInt = setInterval(() => {
+      el.innerText = original.split('').map((char, i) => {
+        if (char === ' ' || char === '·' || char === '(' || char === ')' || char === '#') return char;
+        if (i < iteration / 3) return original[i];
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+      iteration++;
+      if (iteration >= maxIterations) {
+        clearInterval(el._shuffleInt);
+        el.innerText = original;
+      }
+    }, 30);
+  }
+
+  function restoreText(el, original) {
+    clearInterval(el._shuffleInt);
+    el.innerText = original;
+  }
+
+  window.addEventListener('load', () => {
+    const subtitle = document.querySelector('.hero-subtitle');
+    if (!subtitle) return;
+    const original = subtitle.innerText;
+    subtitle.addEventListener('mouseenter', () => shuffleText(subtitle, original));
+    subtitle.addEventListener('mouseleave', () => restoreText(subtitle, original));
+  });
+})();
+  
 </script>
 
 <!-- NAV -->
@@ -960,6 +1111,24 @@
       </div>
     </article>
 
+
+      <!-- GAME 5 -->
+    <article class="game-card reveal" data-link="https://lazy-wizard-studio.itch.io/asteroid-shooter">
+      <div class="game-img-wrap">
+        <img src="AsteroidShooter.png" alt="Asteroid Shooter">
+        <div class="game-overlay"><span class="game-play-btn">✦ Play Now</span></div>
+      </div>
+      <div class="game-info">
+        <p class="game-genre">2D Shooter · PC</p>
+        <h3 class="game-title">Asteroid Shooter</h3>
+        <p class="game-desc">Take control of your ship, destroy incoming asteroids, and survive as long as possible. The more asteroids you shoot, the higher your score climbs. But be careful — one wrong move and it's game over!</p>
+        <p class="game-role">Role: Solo Developer</p>
+        <div class="game-tags">
+          <span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Shooter</span>
+        </div>
+      </div>
+    </article>
+
   </div>
 </section>
 
@@ -994,10 +1163,10 @@
           <span class="stat-num">3</span>
           <span class="stat-label">Teams Worked-in</span>
         </div>
-        <div class="stat">
-          <span class="stat-num">months</span>
-          <span class="stat-label">of dev</span>
-        </div>
+       <div class="stat">
+  <span class="stat-num">5+</span>
+  <span class="stat-label">Games Shipped</span>
+</div>
       </div>
       <div class="social-links">
         <a href="https://www.instagram.com/lazy_wizard_studio?igsh=MTNxc3c0ZHZpbHhhaQ==" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
@@ -1009,26 +1178,58 @@
   </div>
 </section>
 
+
 <!-- CONTACT SECTION -->
 <section id="contact">
   <p class="section-label reveal">Open a Portal</p>
   <h2 class="section-title reveal">Contact Me</h2>
   <div class="contact-inner reveal">
-    <p>Whether you're a studio seeking a developer, an indie team in need of a teammate, or a fellow coder wishing to share knowledge — the portal is open.</p>
-    <div class="contact-links">
-      <a href="mailto:grlad265@gmail.com" class="contact-link">✉ Email Me</a>
-      <a href="https://www.linkedin.com/in/gaurav-lad-68bb9b360" target="_blank" class="contact-link">💼 LinkedIn</a>
-      <a href="https://github.com/Wizard1524" target="_blank" class="contact-link">💻 GitHub</a>
-      <a href="https://lazy-wizard-studio.itch.io/" target="_blank" class="contact-link">🎮 itch.io</a>
-      <a href="https://www.instagram.com/wizard__1524" target="_blank" class="contact-link">📸 Instagram</a>
-      <a href="https://discord.com/users/wizard_1524" target="_blank" class="contact-link">💬 Discord</a>
+    <p>A developer open to <em>studio roles</em>, <em>indie collaborations</em>, and <em>freelance projects</em>. If you have an idea worth building — let's talk.</p>
+    <div class="contact-cards">
+
+      <a href="mailto:grlad265@gmail.com" class="contact-card">
+        <div class="contact-card-icon">✉</div>
+        <div class="contact-card-label">Email</div>
+        <div class="contact-card-sub">grlad265@gmail.com</div>
+      </a>
+
+      <a href="https://www.linkedin.com/in/gaurav-lad-68bb9b360" target="_blank" class="contact-card">
+        <div class="contact-card-icon">💼</div>
+        <div class="contact-card-label">LinkedIn</div>
+        <div class="contact-card-sub">Gaurav-lad</div>
+      </a>
+
+      <a href="https://github.com/Wizard1524" target="_blank" class="contact-card">
+        <div class="contact-card-icon">💻</div>
+        <div class="contact-card-label">GitHub</div>
+        <div class="contact-card-sub">Wizard1524</div>
+      </a>
+
+      <a href="https://lazy-wizard-studio.itch.io/" target="_blank" class="contact-card">
+        <div class="contact-card-icon">🎮</div>
+        <div class="contact-card-label">itch.io</div>
+        <div class="contact-card-sub">lazy-wizard-studio</div>
+      </a>
+
+      <a href="https://www.instagram.com/lazy_wizard_studio?igsh=MTNxc3c0ZHZpbHhhaQ==" target="_blank" class="contact-card">
+        <div class="contact-card-icon">📸</div>
+        <div class="contact-card-label">Instagram</div>
+        <div class="contact-card-sub">@lazy_wizard_studio</div>
+      </a>
+
+      <a href="https://discord.com/users/wizard_1524" target="_blank" class="contact-card">
+        <div class="contact-card-icon">💬</div>
+        <div class="contact-card-label">Discord</div>
+        <div class="contact-card-sub">wizard_1524</div>
+      </a>
+
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <p>Crafted with focus <span>Gaurav Rajendra Lad</span> &nbsp;·&nbsp; All spells reserved &nbsp;·&nbsp; <span>2026</span></p>
+  <p>Crafted with focus <span>Gaurav Rajendra Lad</span> &nbsp;·&nbsp; All spells reserved &nbsp;·&nbsp; <span>March 2026</span></p>
 </footer>
 
 <!-- ── ARCANE DUEL EASTER EGG ── -->
